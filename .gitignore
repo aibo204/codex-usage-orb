@@ -1,0 +1,7 @@
+.DS_Store
+.build/
+dist/
+work/
+design-qa.md
+*.dmg
+*.dmg.sha256
