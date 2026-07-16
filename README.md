@@ -2,7 +2,19 @@
 
 一款原生 macOS Codex 状态与用量悬浮球。它能显示 Codex 是否正在工作、当前大致在做什么、已经运行多久，并在任务结束时发送系统通知。
 
-![工作状态](docs/images/working-card.png)
+## 界面预览
+
+| Codex 工作中 | 任务已完成 |
+| --- | --- |
+| ![Codex 工作状态卡片](docs/images/working-card.png) | ![Codex 任务完成卡片](docs/images/completed-card.png) |
+
+| 5 小时与每周双窗口 | 每周窗口 |
+| --- | --- |
+| ![Codex 双限额窗口](docs/images/usage-dual.png) | ![Codex 每周限额窗口](docs/images/usage-weekly.png) |
+
+| 工作状态 | 5 小时剩余 | 每周剩余 |
+| --- | --- | --- |
+| ![工作中的悬浮球](docs/images/working-orb.png) | ![5 小时限额悬浮球](docs/images/usage-orb-5h.png) | ![每周限额悬浮球](docs/images/usage-orb-weekly.png) |
 
 ## 功能
 
@@ -15,10 +27,6 @@
 - 绿色始终表示剩余量或成功完成
 - 原生 SwiftUI、AppKit 毛玻璃，不需要后台服务器
 - Universal 2：支持 Apple Silicon 与 Intel Mac
-
-| 工作中 | 已完成 |
-| --- | --- |
-| ![工作中的悬浮球](docs/images/working-orb.png) | ![任务完成](docs/images/completed-card.png) |
 
 ## 系统要求
 
