@@ -157,22 +157,6 @@ struct OrbRootView: View {
         }
         .frame(width: 82, height: 82)
         .padding(5)
-        .help(orbHelp)
-    }
-
-    private var orbHelp: String {
-        if model.activity.activeTasks.count > 1 {
-            return "Codex 正在处理 \(model.activity.activeTasks.count) 个任务"
-        }
-        if let task = model.activity.activeTasks.first {
-            return "\(task.title) · \(task.statusText) · \(elapsedText(task.elapsed))"
-        }
-        if let task = model.activity.recentFinishedTask {
-            let result = task.state == .completed ? "已完成" : "已中断"
-            return "\(task.title) · \(result) · 用时 \(elapsedText(task.elapsed))"
-        }
-        guard model.snapshot != nil else { return "尚未发现 Codex usage 数据 · 右键可刷新或退出" }
-        return "\(orbWindowLabel) \(Int(orbRemaining))% · 右键可刷新或退出"
     }
 
     private var progress: CGFloat {
@@ -191,13 +175,6 @@ struct OrbRootView: View {
 
     private func finishedColor(for task: CodexTaskActivity) -> Color {
         task.state == .completed ? completionColor : .orange
-    }
-
-    private func elapsedText(_ interval: TimeInterval) -> String {
-        let seconds = max(0, Int(interval))
-        if seconds >= 3_600 { return "\(seconds / 3_600)h \((seconds % 3_600) / 60)m" }
-        if seconds >= 60 { return "\(seconds / 60)m \(seconds % 60)s" }
-        return "\(seconds)s"
     }
 
     private func statusColor(forRemaining remaining: Double) -> Color {
