@@ -8,10 +8,8 @@ final class UsageViewModel: ObservableObject {
     private var activityTimer: Timer?
     private let activityReader = ActivityReader()
     private let activityQueue = DispatchQueue(label: "local.codex.usage-orb.activity", qos: .utility)
-    private let notificationManager = NotificationManager()
 
     func start() {
-        notificationManager.requestPermission()
         refreshUsage()
         refreshActivity()
         usageTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -47,7 +45,6 @@ final class UsageViewModel: ObservableObject {
             let value = self.activityReader.poll()
             DispatchQueue.main.async {
                 self.activity = value
-                self.notificationManager.handle(value)
             }
         }
     }
@@ -122,17 +119,17 @@ struct OrbRootView: View {
                         .font(.system(size: 9, weight: .medium))
                 }
                 .foregroundColor(.black.opacity(0.78))
-            } else if model.activity.recentFinishedTask != nil {
+            } else if let task = model.activity.recentFinishedTask {
                 Circle()
-                    .stroke(completionColor.opacity(0.18), lineWidth: 6)
+                    .stroke(finishedColor(for: task).opacity(0.18), lineWidth: 6)
                     .padding(7)
                 VStack(spacing: 2) {
-                    Image(systemName: "checkmark")
+                    Image(systemName: task.state == .completed ? "checkmark" : "exclamationmark")
                         .font(.system(size: 24, weight: .semibold))
-                    Text("已完成")
+                    Text(task.state == .completed ? "已完成" : "已中断")
                         .font(.system(size: 9, weight: .medium))
                 }
-                .foregroundColor(completionColor)
+                .foregroundColor(finishedColor(for: task))
             } else {
                 Circle()
                     .trim(from: 0, to: progress)
@@ -171,7 +168,8 @@ struct OrbRootView: View {
             return "\(task.title) · \(task.statusText) · \(elapsedText(task.elapsed))"
         }
         if let task = model.activity.recentFinishedTask {
-            return "\(task.title) · 已完成 · 用时 \(elapsedText(task.elapsed))"
+            let result = task.state == .completed ? "已完成" : "已中断"
+            return "\(task.title) · \(result) · 用时 \(elapsedText(task.elapsed))"
         }
         guard model.snapshot != nil else { return "尚未发现 Codex usage 数据 · 右键可刷新或退出" }
         return "\(orbWindowLabel) \(Int(orbRemaining))% · 右键可刷新或退出"
@@ -189,6 +187,10 @@ struct OrbRootView: View {
 
     private var completionColor: Color {
         Color(red: 0.20, green: 0.78, blue: 0.40)
+    }
+
+    private func finishedColor(for task: CodexTaskActivity) -> Color {
+        task.state == .completed ? completionColor : .orange
     }
 
     private func elapsedText(_ interval: TimeInterval) -> String {
