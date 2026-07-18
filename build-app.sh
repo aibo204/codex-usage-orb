@@ -11,7 +11,6 @@ for ARCH in arm64 x86_64; do
     -target "$ARCH-apple-macos12.0" \
     -framework AppKit \
     -framework SwiftUI \
-    -framework UserNotifications \
     "$ROOT"/Sources/CodexUsageOrb/*.swift \
     -o "$ROOT/.build/release/CodexUsageOrb-$ARCH"
 done

@@ -27,7 +27,7 @@
 - 蓝色圆环的长度仍然表示真实剩余额度
 - 鼠标悬停可以查看任务标题、当前动作和运行时间
 - 同时运行多个任务时，球内显示任务数量
-- 任务完成或中断后发送 macOS 系统通知
+- 任务结束后，球内会短暂显示“已完成”或“已中断”
 
 ### 数据只留在本机
 
@@ -88,7 +88,6 @@ open "$HOME/Applications/Codex Usage Orb.app"
 - macOS 12 或更高版本
 - Apple Silicon 或 Intel Mac
 - 本机安装并使用过 Codex
-- 首次启动时允许系统通知
 
 ## 数据与隐私
 
@@ -97,7 +96,7 @@ open "$HOME/Applications/Codex Usage Orb.app"
 - `~/.codex/sessions`：任务生命周期、进度与用量事件
 - `~/.codex/session_index.jsonl`：本地任务标题
 
-为了避免在界面和通知中暴露隐私，进度摘要会清理本地文件路径并限制长度。
+为了避免在悬停提示中暴露隐私，进度摘要会清理本地文件路径并限制长度。
 
 Codex Usage Orb 是本地日志观察器，不是 OpenAI 官方应用。Codex 日志格式未来发生变化时，解析逻辑可能需要同步更新。
 
