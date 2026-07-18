@@ -102,7 +102,7 @@ struct OrbRootView: View {
 
             if !model.activity.activeTasks.isEmpty {
                 Circle()
-                    .trim(from: 0.08, to: 0.78)
+                    .trim(from: 0, to: progress)
                     .stroke(workColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                     .rotationEffect(.degrees(spinnerRotation))
                     .padding(7)
