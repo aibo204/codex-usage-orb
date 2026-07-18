@@ -1,16 +1,8 @@
 # Codex Usage Orb
 
-一款原生 macOS Codex 状态与用量悬浮球。它能显示 Codex 是否正在工作、当前大致在做什么、已经运行多久，并在任务结束时发送系统通知。
+一款只保留悬浮球的原生 macOS Codex 状态与用量工具。它能显示 Codex 是否正在工作，并在任务结束时发送系统通知。
 
 ## 界面预览
-
-| Codex 工作中 | 任务已完成 |
-| --- | --- |
-| ![Codex 工作状态卡片](docs/images/working-card.png) | ![Codex 任务完成卡片](docs/images/completed-card.png) |
-
-| 5 小时与每周双窗口 | 每周窗口 |
-| --- | --- |
-| ![Codex 双限额窗口](docs/images/usage-dual.png) | ![Codex 每周限额窗口](docs/images/usage-weekly.png) |
 
 | 工作状态 | 5 小时剩余 | 每周剩余 |
 | --- | --- | --- |
@@ -20,10 +12,11 @@
 
 - 始终置顶、跨桌面显示、可拖动
 - Codex 工作时显示蓝色动态状态环
-- 展开后显示任务标题、当前动作与持续时间
-- 同时运行多个任务时自动汇总
+- 鼠标悬停显示任务标题、当前动作与持续时间
+- 同时运行多个任务时在球内显示任务数量
 - 任务完成或中断后发送 macOS 通知
 - 空闲时显示 5 小时或每周窗口的剩余额度
+- 不弹出卡片，左键点击不会改变悬浮球
 - 绿色始终表示剩余量或成功完成
 - 原生 SwiftUI、AppKit 毛玻璃，不需要后台服务器
 - Universal 2：支持 Apple Silicon 与 Intel Mac
@@ -36,7 +29,21 @@
 
 ## 安装
 
-从 [Releases](../../releases) 下载最新 DMG，把 `Codex Usage Orb.app` 拖入“应用程序”。
+### 小白一键安装（推荐）
+
+打开“终端”，复制下面这一整行，粘贴后按回车：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aibo204/codex-usage-orb/main/install.sh | bash
+```
+
+它会下载源码、在你的 Mac 上本机编译、安装到个人“应用程序”目录并自动启动。所有 Codex 数据仍然只留在本机。首次使用如果弹出 Apple 命令行工具安装窗口，请完成安装，再运行一次上面的命令。
+
+想先确认命令内容，可以直接查看 [`install.sh`](install.sh)。
+
+### DMG 安装
+
+也可以从 [Releases](../../releases) 下载最新 DMG，把 `Codex Usage Orb.app` 拖入“应用程序”。
 
 免费发布版本没有 Apple Developer ID 公证。首次双击可能被 macOS 拦截；确认文件来自本仓库后，可先尝试打开一次，再前往“系统设置 → 隐私与安全性”，点击“仍要打开”。不要关闭 Gatekeeper。
 

@@ -1,5 +1,4 @@
 import AppKit
-import QuartzCore
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -25,7 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.isMovableByWindowBackground = true
         panel.hidesOnDeactivate = false
         panel.canBecomeVisibleWithoutLogin = true
-        panel.contentView = NSHostingView(rootView: OrbRootView(model: model, resize: resize))
+        panel.contentView = NSHostingView(rootView: OrbRootView(model: model))
 
         if let screen = NSScreen.main?.visibleFrame {
             panel.setFrameOrigin(NSPoint(x: screen.maxX - 116, y: screen.midY))
@@ -37,14 +36,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func captureForDesignQAIfRequested() {
-        let standardExpandedFlag = CommandLine.arguments.firstIndex(of: "--capture")
-        let dualExpandedFlag = CommandLine.arguments.firstIndex(of: "--capture-dual")
+        let standardFlag = CommandLine.arguments.firstIndex(of: "--capture")
+        let dualFlag = CommandLine.arguments.firstIndex(of: "--capture-dual")
         let dualCollapsedFlag = CommandLine.arguments.firstIndex(of: "--capture-dual-collapsed")
         let completedFlag = CommandLine.arguments.firstIndex(of: "--capture-completed")
-        let dualWindowFlag = dualExpandedFlag ?? dualCollapsedFlag
-        let expandedFlag = standardExpandedFlag ?? dualExpandedFlag ?? completedFlag
-        let collapsedFlag = CommandLine.arguments.firstIndex(of: "--capture-collapsed") ?? dualCollapsedFlag
-        guard let flag = expandedFlag ?? collapsedFlag,
+        let dualWindowFlag = dualFlag ?? dualCollapsedFlag
+        let collapsedFlag = CommandLine.arguments.firstIndex(of: "--capture-collapsed")
+        guard let flag = standardFlag ?? dualFlag ?? dualCollapsedFlag ?? completedFlag ?? collapsedFlag,
               CommandLine.arguments.indices.contains(flag + 1) else { return }
         let outputPath = CommandLine.arguments[flag + 1]
 
@@ -80,14 +78,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        if expandedFlag != nil {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
-                guard let self = self else { return }
-                self.model.expanded = true
-                self.resize(expanded: true, height: self.desiredExpandedHeight())
-            }
-        }
-        let captureDelay = expandedFlag == nil ? 1.2 : 1.8
+        let captureDelay = completedFlag == nil ? 1.2 : 1.8
         DispatchQueue.main.asyncAfter(deadline: .now() + captureDelay) { [weak self] in
             guard let view = self?.panel.contentView,
                   let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else {
@@ -99,26 +90,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 try? data.write(to: URL(fileURLWithPath: outputPath))
             }
             NSApp.terminate(nil)
-        }
-    }
-
-    private func desiredExpandedHeight() -> CGFloat {
-        if !model.activity.activeTasks.isEmpty {
-            return model.activity.activeTasks.count > 1 ? min(248, CGFloat(92 + model.activity.activeTasks.prefix(3).count * 52)) : 176
-        }
-        if model.activity.recentFinishedTask != nil { return 156 }
-        return model.snapshot?.secondaryUsed != nil ? 228 : 192
-    }
-
-    private func resize(expanded: Bool, height: CGFloat) {
-        let size = expanded ? NSSize(width: 316, height: height) : NSSize(width: 92, height: 92)
-        let old = panel.frame
-        let origin = NSPoint(x: old.maxX - size.width, y: old.maxY - size.height)
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.36
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            context.allowsImplicitAnimation = true
-            panel.animator().setFrame(NSRect(origin: origin, size: size), display: true)
         }
     }
 
