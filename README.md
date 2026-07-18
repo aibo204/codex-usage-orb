@@ -34,7 +34,7 @@
 打开“终端”，复制下面这一整行，粘贴后按回车：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aibo204/codex-usage-orb/main/install.sh | bash
+curl --http1.1 -fsSL --retry 5 --retry-all-errors https://raw.githubusercontent.com/aibo204/codex-usage-orb/main/install.sh | bash
 ```
 
 它会下载源码、在你的 Mac 上本机编译、安装到个人“应用程序”目录并自动启动。所有 Codex 数据仍然只留在本机。首次使用如果弹出 Apple 命令行工具安装窗口，请完成安装，再运行一次上面的命令。

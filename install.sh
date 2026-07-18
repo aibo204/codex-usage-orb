@@ -2,7 +2,10 @@
 set -euo pipefail
 
 REPOSITORY="aibo204/codex-usage-orb"
-ARCHIVE_URL="https://github.com/${REPOSITORY}/archive/refs/heads/main.tar.gz"
+ARCHIVE_URLS=(
+  "https://codeload.github.com/${REPOSITORY}/tar.gz/refs/heads/main"
+  "https://github.com/${REPOSITORY}/archive/refs/heads/main.tar.gz"
+)
 TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/codex-usage-orb.XXXXXX")"
 
 cleanup() {
@@ -23,7 +26,27 @@ if ! xcode-select -p >/dev/null 2>&1 || ! xcrun swiftc --version >/dev/null 2>&1
 fi
 
 echo "正在下载 Codex Usage Orb…"
-curl -fsSL --retry 3 "$ARCHIVE_URL" -o "$TEMP_DIR/source.tar.gz"
+DOWNLOAD_OK=false
+for ARCHIVE_URL in "${ARCHIVE_URLS[@]}"; do
+  if curl --http1.1 -fsSL \
+    --retry 5 \
+    --retry-delay 2 \
+    --retry-all-errors \
+    --connect-timeout 20 \
+    --max-time 300 \
+    "$ARCHIVE_URL" \
+    -o "$TEMP_DIR/source.tar.gz"; then
+    DOWNLOAD_OK=true
+    break
+  fi
+  echo "当前下载地址连接失败，正在尝试备用地址…"
+done
+
+if [[ "$DOWNLOAD_OK" != true ]] || ! tar -tzf "$TEMP_DIR/source.tar.gz" >/dev/null 2>&1; then
+  echo "源码下载失败，请检查网络后重新运行安装命令。"
+  exit 1
+fi
+
 tar -xzf "$TEMP_DIR/source.tar.gz" -C "$TEMP_DIR"
 
 SOURCE_DIR="$TEMP_DIR/codex-usage-orb-main"
